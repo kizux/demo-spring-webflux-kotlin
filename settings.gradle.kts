@@ -12,4 +12,4 @@ pluginManagement {
 		}
 	}
 }
-rootProject.name = "demo-kotlin-spring-webflux"
+rootProject.name = "kotlin-demo-coroutines"

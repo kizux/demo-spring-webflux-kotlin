@@ -1,8 +1,7 @@
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-	kotlin("plugin.jpa") version "1.3.31"
-	id("org.springframework.boot") version "2.2.0.M3"
+	id("org.springframework.boot") version "2.2.0.BUILD-SNAPSHOT"
 	id("io.spring.dependency-management") version "1.0.7.RELEASE"
 	kotlin("jvm") version "1.3.31"
 	kotlin("plugin.spring") version "1.3.31"
@@ -19,13 +18,15 @@ repositories {
 }
 
 dependencies {
-	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-webflux")
 	implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
 	implementation("org.jetbrains.kotlin:kotlin-reflect")
 	implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-	runtimeOnly("org.postgresql:postgresql")
-	runtimeOnly("com.h2database:h2")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.2.1")
+	implementation("org.jetbrains.kotlinx:kotlinx-coroutines-reactor:1.2.1")
+	implementation("org.springframework.data:spring-data-r2dbc:1.0.0.BUILD-SNAPSHOT")
+	implementation("org.postgresql:postgresql")
+	implementation("io.r2dbc:r2dbc-postgresql:1.0.0.M7")
 	testImplementation("org.springframework.boot:spring-boot-starter-test") {
 		exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
 		exclude(group = "junit", module = "junit")
