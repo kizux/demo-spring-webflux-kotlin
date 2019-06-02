@@ -1,18 +1,38 @@
 package fr.kizux.kotlindemocoroutines.repository
 
-import fr.kizux.kotlindemocoroutines.model.TABLE_USER_NAME
-import fr.kizux.kotlindemocoroutines.model.User
+import fr.kizux.kotlindemocoroutines.model.*
 import kotlinx.coroutines.flow.Flow
-import org.springframework.data.r2dbc.core.DatabaseClient
-import org.springframework.data.r2dbc.core.asType
-import org.springframework.data.r2dbc.core.await
-import org.springframework.data.r2dbc.core.flow
+import kotlinx.coroutines.reactive.awaitSingle
+import org.springframework.data.r2dbc.core.*
 import org.springframework.stereotype.Component
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Component
 class UserRepository(private val dbClient: DatabaseClient) {
+    fun findAll(): Flow<User> = dbClient.select().from(USER_TABLE_NAME).asType<User>().fetch().flow()
 
-    fun findAll(): Flow<User> = dbClient.select().from(TABLE_USER_NAME).asType<User>().fetch().flow()
+    suspend fun findOne(id: Long): User? = dbClient.execute()
+            .sql("SELECT * FROM $USER_TABLE_NAME WHERE $USER_COLUMN_ID_NAME = $id")
+            .asType<User>()
+            .fetch().awaitOneOrNull()
 
-    suspend fun save(user: User) = dbClient.insert().into(User::class.java).table(TABLE_USER_NAME).using(user).await()
+    suspend fun save(user: User): User = dbClient.insert()
+            .into<User>()
+            .table(USER_TABLE_NAME)
+            .using(user)
+            .map { t, u ->
+                User(
+                        t.get(USER_COLUMN_ID_NAME) as Long?,
+                        t.get(USER_COLUMN_EMAIL_NAME) as String?,
+                        LocalDateTime.ofInstant(t.get(USER_COLUMN_BIRTHDATE_NAME) as Instant?, ZoneOffset.UTC)
+                )
+            }
+            .awaitOne()
+
+    suspend fun deleteAll(): Int = dbClient.delete()
+            .from(User::class.java)
+            .fetch()
+            .rowsUpdated().awaitSingle()
 }

@@ -5,10 +5,13 @@ import org.springframework.data.relational.core.mapping.Column
 import org.springframework.data.relational.core.mapping.Table
 import java.time.LocalDateTime
 
-const val TABLE_USER_NAME: String = "users"
+const val USER_TABLE_NAME: String = "users"
+const val USER_COLUMN_ID_NAME = "id"
+const val USER_COLUMN_EMAIL_NAME = "email"
+const val USER_COLUMN_BIRTHDATE_NAME = "birthdate"
 
-@Table(TABLE_USER_NAME)
+@Table(USER_TABLE_NAME)
 data class User(
-        @Id val id: Long? = null,
-        @Column("email") val email: String? = null,
-        @Column("sign_in_date") val signInDate: LocalDateTime)
+        @Id @Column(USER_COLUMN_ID_NAME) val id: Long? = null,
+        @Column(USER_COLUMN_EMAIL_NAME) val email: String? = null,
+        @Column(USER_COLUMN_BIRTHDATE_NAME) val birthDate: LocalDateTime? = null)
